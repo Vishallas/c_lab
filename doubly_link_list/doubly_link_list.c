@@ -110,7 +110,7 @@ void display()
 	printf("\n The elements in the list are:");
 	while (cur != NULL)
 	{
-		printf("%d\t", cur->data);
+		printf("%d ", cur->data);
 		cur = cur->flink;
 	}
 }
