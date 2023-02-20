@@ -1,108 +1,124 @@
-#include<stdio.h>
-#include<stdlib.h>
-#include<ctype.h>
-struct node{
-    int data;
-    struct node* link;
-};
+#include <stdio.h>
+#include <stdlib.h>
+#include <ctype.h>
+#define SIZE 20
 
-struct node *first=NULL,*last=NULL,*cur;
+char Expr[SIZE];
+char Stack[SIZE];
+int Top = -1;
 
-void push(struct node *first,char ele);
-void display();
-void create(struct node *first,char ele);
+void push(char ch);
 void pop();
-void expression(char
-void infixtopostfix();
+void infix_to_postfix();
 
-char ele;
+int m, l;
 
-void no(){
-     do{
-        int n=0;
-        printf("1.push\n2.pop\n3.display\n");
-        printf("Enter the choice : ");
-        scanf("%d",&n);
-        switch(n){
-            case 1:
-                printf("\nEnter the element to be inserted : ");
-                scanf("\n%c",&ele);
-                if(first==NULL)
-                    create(first,ele);
-                else
-                    push(first,ele);
-                break;
-            case 2:
-                if(first!=NULL)
-                    pop();
-                break;
-            case 3:
-                display();
-                break;
-            default:
-                //exit(0);
-                printf("kolaru\n");
-       }
-    }while(0);
+void main()
+{
+	char ch;
+	printf("Program to covert infix expression into postfix expression:\n");
+	printf("Enter your expression & to quit enter fullstop(.)\n");
+	while ((ch = getc(stdin)) != '\n')
+	{
+		Expr[m] = ch;
+		m++;
+	}
+	l = m;
+	infix_to_postfix();
 }
 
-void main(){
-    int n=0;
-    first=last=NULL;
-    
-    
-    infixtopostfix();
-    
+void push(char ch)
+{
+	if (Top + 1 >= SIZE)
+	{
+		printf("\nStack is full");
+	}
+	else
+	{
+		Top = Top + 1;
+		Stack[Top] = ch;
+	}
 }
 
-void infixtopostfix(){
-    printf("Enter the Expression ");
-    while((ele=getc(stdin))!='\n'){
-        if(first==NULL)
-            createqueue(ele);
-        else
-            pushqueue(ele);
-    }
-    printf("The entered expression is ");
-    display();
+void pop()
+{
+	if (Top < 0)
+	{
+		printf("\n Stack is empty");
+	}
+	else
+	{
+		if (Top >= 0)
+		{
+			if (Stack[Top] != '(')
+				printf("%c", Stack[Top]);
+			Top = Top - 1;
+		}
+	}
 }
 
-void expression(char ele){
-    cur = (struct node*)malloc(sizeof(struct node));
-    cur->data = ele;
-    last->link =cur;
-    cur->link = NULL;
-    last=cur;
-}
+void infix_to_postfix()
+{
+	m = 0;
+	while (m < l)
+	{
+		switch (Expr[m])
+		{
 
-void create(struct node *first,char ele){
-    cur = (struct node*)malloc(sizeof(struct node));
-    cur->data = ele;
-    cur->link = NULL;
-    first=last=cur;
-}
-void push(struct node *first,char ele){
-    cur = (struct node*)malloc(sizeof(struct node));
-    cur->data=ele;
-    cur->link = first;
-    first=cur;
-    
-}
+		case '+':
+		case '-':
 
-void pop(){
-    cur = first;
-    printf("The element deleted is %c.\n",cur->data); 
-    first=first->link;
-    cur->link = NULL;
-    free(cur);
-}
+			while (Stack[Top] == '-' || Stack[Top] == '+' || Stack[Top] == '*' || Stack[Top] == '/' || Stack[Top] == '^' && Stack[Top] != '(')
+				pop();
+			push(Expr[m]);
+			++m;
+			break;
 
-void display(){
-    cur = first;
-    while(cur!=NULL){
-        printf("%c ",cur->data);
-        cur = cur->link;
-    }
-    printf("\n");
+		case '/':
+		case '*':
+
+			while (Stack[Top] == '*' || Stack[Top] == '/' || Stack[Top] == '^' && Stack[Top] != '(')
+				pop();
+			push(Expr[m]);
+			++m;
+			break;
+
+		case '^':
+
+			push(Expr[m]);
+			++m;
+			break;
+
+		case '(':
+
+			push(Expr[m]);
+			++m;
+			break;
+
+		case ')':
+			while (Stack[Top] != '(')
+				pop();
+			pop();
+			++m;
+			break;
+
+		case '.':
+			while (Top >= 0)
+				pop();
+			exit(0);
+		default:
+			if (isalpha(Expr[m]))
+			{
+				printf("%c", Expr[m]);
+				++m;
+				break;
+			}
+			else
+			{
+				printf("\n Some error");
+				exit(0);
+			}
+		}
+	}
 }
 

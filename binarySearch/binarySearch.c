@@ -201,4 +201,3 @@ void postorder(struct tree *t)
         printf("\t%d", t->data);
     }
 }
-
